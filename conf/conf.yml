@@ -1,0 +1,119 @@
+center_host: 192.168.3.57
+center_port: 39999
+agent_lock_udp_port: 54444       #用于agent启动时,监听此端口,避免多个agent启动的情况
+redis:
+    host: 192.168.3.57
+    port: 6379
+    db: 9
+    auth:
+
+threads: 1
+script_path: ../scripts
+
+state_retention: 1000  #状态保存数量
+kpi_retention: 1000    #KPI保存数
+
+
+hosts:
+  paco-mi:
+    ip: 192.168.3.57
+    states:
+      - a9.0001
+      - a9.0002
+      - a9.0003
+    kpis:
+      - k0.0001
+      - k1.0001
+      - k1.0002
+      - k1.0003
+  hp:
+    ip: 192.168.3.58
+    states:
+      - a9.0001
+      - a9.0002
+      - a9.0003
+    kpis:
+      - k0.0001
+      - k1.0001
+      - k1.0002
+      - k1.0003
+
+states:
+  a9.0001:
+      needClear: true
+      name: webapp1心跳
+      alarmMsg: webapp1心跳
+      alarmInterval: 600
+      interval: 10
+      probe:  http_hb.py http://localhost/webapp1/probe/host.jsp
+  a9.0002:
+      needClear: true
+      name: webapp2心跳
+      alarmMsg: webapp2心跳
+      alarmInterval: 600
+      interval: 10
+      probe:  http_hb.py http://localhost/webapp2/probe/host.jsp
+  a9.0003:
+      needClear: true
+      name: webapp3心跳
+      alarmMsg: webapp2心跳
+      alarmInterval: 600
+      interval: 10
+      probe:  http_hb.py http://localhost/webapp3/probe/host.jsp
+kpis:
+  k1.0001:
+    name: cpu_usage
+    interval: 10
+    probe: cpu.py
+    max: 75
+    needClear: true 
+    alarmMsg: cpu usage too high
+    alarmInterval: 1800
+    needClear: true
+  k1.0002:
+    name: mem_usage
+    interval: 10
+    probe: mem.py
+    max: 75
+    needClear: true 
+    alarmMsg: mem usage too high
+    alarmInterval: 1800
+    needClear: true
+  k1.0003:
+    name: disk_usage
+    interval: 10
+    probe: disk.py
+    max: 75
+    needClear: true 
+    alarmMsg: disk usage too high
+    alarmInterval: 1800
+    needClear: true
+  k1.0004:
+    name: proc_number
+    interval: 60
+    probe: ps.sh
+    max: 600
+    min:
+    alarmMsg: proc_number exceed
+    alarmInterval: 600
+    needClear: true
+  k0.0001:
+    name: Oracle_conn_num
+    interval: 60
+    probe:  netstat.sh 1521
+    max: 100
+    min:
+    alarmMsg: Oracle connection number exceed
+    alarmInterval: 1800
+    needClear: true
+  k0.0002:
+    name: Redis连接数
+    interval: 60
+    probe: netstat.sh 6379
+    max: 300
+    min:
+    alarmMsg: Redis连接数
+    alarmInterval: 600
+    needClear: true
+
+
