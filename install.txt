@@ -1,0 +1,29 @@
+1. install dependency modules pip
+# pip install pyyaml pip install redis
+# pip install hiredis
+# pip install psutil
+# pip install flask-digest
+
+2. install supervisor and redis
+
+For ubuntu
+# apt install supervisor redis
+For rhel, centos
+# yum install supervisor redis
+
+3. write your state/kpi probe scripts in scripts.
+
+4. configure conf/conf.yml to fit for your need.
+
+5. customize src/notifier to trigger notifier in your way, configure conf/recv.yml for notification receivers.
+
+6. adjust bin/env to fit for your enviroment.
+
+7. adjust ops/omc_supervisor.conf to fit for your enviroment.
+than cp it to your supervisor config dir
+
+8. start up omc groups in supervisor
+# supervisorctl update
+
+
+
