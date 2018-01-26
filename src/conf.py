@@ -87,30 +87,15 @@ class RecvConf:
         self.sms_url = self.conf["sms_url"]
         self.groups = dict()
 
-        def normalizeNumber(num):
-            '''统一号码格式'''
-            number=str(num)
-            if len(number)==13 and number[0:3] == "861":
-                return number
-            if len(number)==11 and number[0:1] =="1":
-                return "86"+number
-            return None
-
         for groupName, numbers in self.conf["groups"].items():
-            numSet = set(filter(lambda x:x is not None, map(normalizeNumber,numbers)))
+            numSet = set(numbers)
             self.groups[groupName] = numSet
 
         self.alarmMap = dict()
-        def getNumberSetByGn(gn):
-            if gn in self.groups:
-                return self.groups[gn]
-            else:
-                None
-
         for prefix, groupNames in self.conf["alarmMap"].items():
             numbers = reduce(lambda x,y: x.union(y),
                              filter(lambda x:x is not None,
-                                                            map(getNumberSetByGn, groupNames)))
+                                            map(lambda x: self.groups.get(x, None), groupNames)))
             if len(numbers)<1:
                 raise  RygConfException("empty recv number list found for alarmMap [%s] found, check file [%s]"%(prefix, self.path))
             self.alarmMap[prefix] = numbers
