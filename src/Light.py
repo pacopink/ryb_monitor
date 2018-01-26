@@ -119,21 +119,22 @@ class LightChecker(object):
         light.name = kpi.name
         light.needClear = kpi.needClear
         if kpiRecord is None:
-            light.msg="no kpi reported yet, please check"
+            light.desc="no kpi reported yet, please check"
+            light.msg=key+","+"no kpi reported yet, please check"
             self.yellow.append(light)
         else:
             if kpi.min is not None and kpi.min>kpiRecord.value:
-                light.msg = key+","+kpi.name+","+"%d低于下限%d"%(kpiRecord.value, kpi.min)
-                light.desc = light.msg
+                light.desc = "%d低于下限%d"%(kpiRecord.value, kpi.min)
+                light.msg = key+","+kpi.name+","+light.desc
                 self.red.append(light)
             elif kpi.max is not None and kpi.max<kpiRecord.value:
                 log_debug("%s  %d", kpiRecord, kpi.max)
-                light.msg = key+","+kpi.name+","+u"%d超过上限%d"%(kpiRecord.value, kpi.max)
-                light.desc = light.msg
+                light.desc = "%d超过上限%d"%(kpiRecord.value, kpi.max)
+                light.msg = key+","+kpi.name+","+light.desc
                 self.red.append(light)
             elif (ts-kpiRecord.ts)>kpi.interval*3:
-                light.msg = key+" "+"状态连续3个周期未更新，请检查"
                 light.desc = "状态连续3个周期未更新"
+                light.msg = key+" "+light.desc
                 self.red.append(light)
             else:
                 self.green.append(light)
