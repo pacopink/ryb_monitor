@@ -100,12 +100,12 @@ class LightChecker(object):
             self.yellow.append(light)
         else:
             if statRecord.stat != 0:  #状态非0的，挂红灯
-                light.msg = key+" "+stat.alarmMsg
                 light.desc = statRecord.msg
+                light.msg = key+","+light.name+","+light.desc
                 self.red.append(light)
             elif (ts-statRecord.ts)>stat.interval*3: #连续3个周期没有更新的，红灯
-                light.msg = key+" "+"状态连续3个周期未更新，请检查"
                 light.desc = "状态连续3个周期未更新"
+                light.msg = key+","+light.name+","+light.desc
                 self.red.append(light)
             else:
                 self.green.append(light)
@@ -120,21 +120,20 @@ class LightChecker(object):
         light.needClear = kpi.needClear
         if kpiRecord is None:
             light.desc="no kpi reported yet, please check"
-            light.msg=key+","+"no kpi reported yet, please check"
+            light.msg = key+","+light.name+","+light.desc
             self.yellow.append(light)
         else:
             if kpi.min is not None and kpi.min>kpiRecord.value:
                 light.desc = "%d低于下限%d"%(kpiRecord.value, kpi.min)
-                light.msg = key+","+kpi.name+","+light.desc
+                light.msg = key+","+light.name+","+light.desc
                 self.red.append(light)
             elif kpi.max is not None and kpi.max<kpiRecord.value:
-                log_debug("%s  %d", kpiRecord, kpi.max)
                 light.desc = "%d超过上限%d"%(kpiRecord.value, kpi.max)
-                light.msg = key+","+kpi.name+","+light.desc
+                light.msg = key+","+light.name+","+light.desc
                 self.red.append(light)
             elif (ts-kpiRecord.ts)>kpi.interval*3:
                 light.desc = "状态连续3个周期未更新"
-                light.msg = key+" "+light.desc
+                light.msg = key+","+light.name+","+light.desc
                 self.red.append(light)
             else:
                 self.green.append(light)

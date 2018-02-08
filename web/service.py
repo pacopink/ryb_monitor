@@ -13,7 +13,9 @@ conf = RygConf(CONF_FILE)
 rb = RedisBatch(conf.redis_conf, pool_size=8)
 
 def getHosts():
-    return conf.mon_hosts.keys()
+    h = conf.mon_hosts.keys()
+    h.sort()
+    return h
 
 def getObjNameByObjId(objId):
     typ, hostname, id = objId.split(':')
@@ -21,11 +23,11 @@ def getObjNameByObjId(objId):
     if typ == 'KPI':
         k = conf.kpis.get(id, None)
         if k is not None:
-            name = k.name
+            name = k.name.decode('UTF-8')
     else:
         k = conf.states.get(id, None)
         if k is not None:
-            name = k.name
+            name = k.name.decode('UTF-8')
     return name
 
 
