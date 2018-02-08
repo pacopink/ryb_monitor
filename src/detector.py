@@ -10,7 +10,7 @@ from Light import *
 
 REDIS_BATCH=100
 MAX_THREADS=10
-CHECK_INTERVAL=30 #30min 扫描一次所有状态,改变灯状态
+CHECK_INTERVAL=10 #10s 扫描一次所有状态,改变灯状态
 cfgFile = "../conf/conf.yml"
 
 if __name__=="__main__":
@@ -46,10 +46,6 @@ if __name__=="__main__":
             except Exception,e:
                 log_error("housekeep encounter error: %s", e)
 
-        try:
-            time.sleep(CHECK_INTERVAL)
-        except:
-            break
         log_info("begin checking")
         #从redis批量获取结果
         snapshoot = rb.list_head(checkpoints)
@@ -112,6 +108,11 @@ if __name__=="__main__":
             elif green.obj in current_yellow:
                 #摘除黄灯
                 r.hdel(KeyGen.YELLOW_LIGHT, green.obj)
+
+        try:
+            time.sleep(CHECK_INTERVAL) #睡interval
+        except:
+            break
 
 
 

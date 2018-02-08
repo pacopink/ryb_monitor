@@ -51,11 +51,11 @@ if __name__=="__main__":
     #env sample : export RYG_AUTH=paco,ericsson:admin:123456
     auth_str = os.environ.get('RYG_AUTH')
     if auth_str is None:
-        add_user('admin', 'ericsson') #not good practice, just for test
+        add_user('admin', '123456') #not good practice, just for test
     else:
         map(lambda x:add_user(*x),
             map(lambda x:x.split(','),
                 auth_str.split(':')))
-    app.run(host="0.0.0.0", port=38888, debug=True)
+    app.run(host="0.0.0.0", port=38888, debug=False)
 
 
