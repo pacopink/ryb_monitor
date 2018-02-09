@@ -20,6 +20,11 @@ recv_conf = RecvConf(RECV_FILE)
 log_info("config loaded")
 pool = connRedisPool(conf.redis_conf)
 log_info("redis connected, enter polling loop")
+
+
+r = getRedisFromPool(pool)
+r.delete(KeyGen.ALARM_QUEUE) #delete stale alarm notifications when startup
+
 while True:
     r = getRedisFromPool(pool)
     p = r.pipeline()

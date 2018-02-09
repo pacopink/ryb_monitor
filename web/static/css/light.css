@@ -1,0 +1,45 @@
+.folder {
+    background: #eee;
+}
+.folder-title {
+    cursor: pointer;
+    color: #FFFFFF;
+    background: #159C0E;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.folder-main {
+    padding: 10px;
+}
+
+.red-folder {
+    background: #ffecec;
+}
+.red-folder-title {
+    cursor: pointer;
+    color: #FFFFFF;
+    background: #FF5722;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.yellow-folder {
+    background: #ffffcc;
+}
+.yellow-folder-title {
+    cursor: pointer;
+    color: #ffffff;
+    background: #b9b900;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.red-table{}
+.red-table tr{border-bottom: 1px solid #d0d0d0; height: 25px; }
+.red-table th{font-size: 14px; text-align: center}
+.red-table td{padding: 5px 10px;}
+.yellow-table{}
+.yellow-table tr{border-bottom: 1px solid #d0d0d0; height: 25px; }
+.yellow-table th{font-size: 14px; text-align: center}
+.yellow-table td{padding: 5px 10px;}

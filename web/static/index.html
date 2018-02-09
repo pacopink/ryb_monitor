@@ -4,98 +4,41 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 	<meta name="renderer" content="webkit|ie-comp|ie-stand">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>爱立信系统监控</title>
-	<link href="image/favicon.ico" rel="shortcut icon">
-	<link rel="stylesheet" href="css/sccl.css">
-	<link rel="stylesheet" href="css/skin.css">
-      <style>
-          .folder {
-              background: #eee;
-          }
-
-          .folder-title {
-              cursor: pointer;
-              background: #bbb;
-              padding: 10px;
-              font-size: 18px;
-          }
-
-          .folder-main {
-              padding: 10px;
-          }
-      </style>
+    <title>系统监控</title>
+	<link rel="stylesheet" href="css/light.css">
   </head>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/san.min.js"></script>
+  <script src="js/light.js"></script>
   <body>
   <div id="hosts"></div>
   <div id="red"></div>
   <div id="yellow"></div>
   </body>
-  <script src="insdep/jquery.min.js"></script>
-  <script src="insdep/san.dev.js"></script>
   <script>
-      var model = {
-          "hosts":[],
-          "details":[],
-          "lights": {
-              "red":{},
-              "yellow":{}
-          }
-      }
-
-      var Hosts = san.defineComponent({
-          template: '<span s-for="h in model.hosts" title="hh{{h}}">Host:{{h}}</span>',
-          initData: function() {
-              return {hosts: ['hostA', 'hostB']};
-          } ,
-          attached: function() {
-              if (model != undefined && "hosts" in model) {
-                  this.data.set('hosts', model.hosts)
-              }
-
-          }
-      })
-
-      var RedLightZone = san.defineComponent({
-          template: '<p s-for="light in redLights">'
-          +' {{ redLights[light].name  }}'
-          + '</p>',
-          attached: function () {
-              if (model != undefined && "lights" in model) {
-                  var lights = model.lights;
-                  if (lights != undefined && "red" in lights) {
-                      return  {redLights:lights.red}
-                  }
-              }
-          }
-      });
-
-      var DD = san.defineComponent({
-          template: '<p>{{ ddd }}</p>',
-          initData: function(){
-              return {ddd:new Date()};
-          }
-      })
-
-      var redLightZone = new RedLightZone();
-      var hosts = new Hosts();
-      var dd = new DD();
+      var model = null;
+      var hosts = new HostList();
+      hosts.attach(document.body.children.hosts)
+      var rz = new LightZone({data:{color:'red'}})
+      rz.attach(document.getElementById('red'))
+      var yz = new LightZone({data:{color:'yellow'}})
+      yz.attach(document.getElementById('yellow'))
 
       /*循环更新model*/
-      var INTERVAL = 3000
+      var INTERVAL = 10000 //每10s
       var tt = null;
       function requestLoop() {
           $.ajax({
               type : "GET",
-              url :"getSummary?detail=1",
+              url :"getSummary",
               dataType: "json",
               success : function(data) {
-                  model = data
                   tt = setTimeout(requestLoop, INTERVAL);
-                  hosts.attach(document.body.children.hosts)
-                  dd.attach(document.body.children.yellow)
-                  redLightZone.attach(document.body.children.red)
+                  model = data
+                  hosts.updateModel(data.hosts)
+                  rz.updateModel(data.lights.red)
+                  yz.updateModel(data.lights.yellow)
               },
               error : function(xhr,textStatus,errorThrown){
                   if (xhr.status == 401) {
@@ -108,7 +51,5 @@
           })
       }
       requestLoop();
-
-
   </script>
 </html>
