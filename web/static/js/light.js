@@ -158,7 +158,7 @@ var HostDetail = san.defineComponent({
     + '      <tr s-for="l in h.states">'
     + '          <td>{{ l.ts}}</td>'
     + '          <td>{{ l.name }}</td>'
-    + '          <td>{{ l.obj }}</td>'
+    + '          <td>{{ l.id }}</td>'
     + '          <td>{{ l.msg }}</td>'
     + '          <td>{{ l.state }}</td>'
     + '      </tr>'
@@ -175,7 +175,7 @@ var HostDetail = san.defineComponent({
     + '      <tr s-for="l in h.kpis">'
     + '          <td>{{ l.ts}}</td>'
     + '          <td>{{ l.name }}</td>'
-    + '          <td>{{ l.obj }}</td>'
+    + '          <td>{{ l.id}}</td>'
     + '          <td>{{ l.value}}</td>'
     + '      </tr>'
     + '  </table>'
@@ -186,20 +186,20 @@ var HostDetail = san.defineComponent({
         var hostdetail =  [];
         var hosts = Object.keys(model)
         for (i=0;i<hosts.length;i++) {
-            host = hosts[i]
+            var host = hosts[i]
             var kpis = []
             for (j=0;j<model[host].kpis.length;j++) {
-                kpi = model[host].kpis[i]
+                var kpi = model[host].kpis[j]
                 kpis.push({
                     id: kpi.id,
                     name: kpi.name,
                     ts: formatDate(kpi.data.ts),
-                    value: formatDate(kpi.data.value)
+                    value: kpi.data.value
                 })
             }
             var stats = []
             for (j=0;j<model[host].states.length;j++) {
-                stat = model[host].states[i]
+                var stat = model[host].states[j]
                 stats.push({
                     id: stat.id,
                     name: stat.name,
