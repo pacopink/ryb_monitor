@@ -15,6 +15,7 @@
   <div id="hosts"></div>
   <div id="red"></div>
   <div id="yellow"></div>
+  <div id="details"></div>
   </body>
   <script>
       var model = null;
@@ -24,6 +25,8 @@
       rz.attach(document.getElementById('red'))
       var yz = new LightZone({data:{color:'yellow'}})
       yz.attach(document.getElementById('yellow'))
+      var dt = new HostDetail()
+      dt.attach(document.getElementById('details'))
 
       /*循环更新model*/
       var INTERVAL = 10000 //每10s
@@ -31,7 +34,7 @@
       function requestLoop() {
           $.ajax({
               type : "GET",
-              url :"getSummary",
+              url :"getSummary?detail=1",
               dataType: "json",
               success : function(data) {
                   tt = setTimeout(requestLoop, INTERVAL);
@@ -39,6 +42,7 @@
                   hosts.updateModel(data.hosts)
                   rz.updateModel(data.lights.red)
                   yz.updateModel(data.lights.yellow)
+                  dt.updateModel(data.details)
               },
               error : function(xhr,textStatus,errorThrown){
                   if (xhr.status == 401) {

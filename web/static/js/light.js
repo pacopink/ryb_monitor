@@ -120,3 +120,112 @@ var LightZone = san.defineComponent({
         }
     }
 });
+
+var Folder = san.defineComponent({
+    template: ''
+    + '<div class="{{prefix}}-folder">'
+    + '<div class="{{prefix}}-folder-title" on-click="toggle">{{title}}</div>'
+    + '<div class="{{prefix}}-folder-main" style="{{fold ? \'display:none\' : \'\'}}">'
+    + '<slot></slot>'
+    + '</div>'
+    + '</div>',
+    toggle: function () {
+        this.data.set('fold', !this.data.get('fold'));
+    },
+    initData: function() {
+        return {
+            'fold': true
+        }
+    }
+});
+
+var HostDetail = san.defineComponent({
+    components: {
+        'ui-folder': Folder
+    },
+    template: ''
+    + '<div>'
+    + '<ui-folder prefix="hostdetail" san-for="h in hostdetail" title="{{h.hostname}}">'
+    + '<ui-folder prefix="stat" title="STAT COUNT: {{h.states.length}}">'
+    + '<table class="stat-table">'
+    + '      <tr>'
+    + '          <th>时间</th>'
+    + '          <th>名称</th>'
+    + '          <th>对象</th>'
+    + '          <th>状态</th>'
+    + '          <th>描述</th>'
+    + '      </tr>'
+    + '      <tr s-for="l in h.states">'
+    + '          <td>{{ l.ts}}</td>'
+    + '          <td>{{ l.name }}</td>'
+    + '          <td>{{ l.obj }}</td>'
+    + '          <td>{{ l.msg }}</td>'
+    + '          <td>{{ l.state }}</td>'
+    + '      </tr>'
+    + '  </table>'
+    + '</ui-folder>'
+    + '<ui-folder prefix="kpi" title="KPI COUNT: {{h.kpis.length}}">'
+    + '<table class="kpi-table">'
+    + '      <tr>'
+    + '          <th>时间</th>'
+    + '          <th>名称</th>'
+    + '          <th>对象</th>'
+    + '          <th>值</th>'
+    + '      </tr>'
+    + '      <tr s-for="l in h.kpis">'
+    + '          <td>{{ l.ts}}</td>'
+    + '          <td>{{ l.name }}</td>'
+    + '          <td>{{ l.obj }}</td>'
+    + '          <td>{{ l.value}}</td>'
+    + '      </tr>'
+    + '  </table>'
+    + '</ui-folder>'
+    + '</ui-folder>'
+    + '</div>',
+    updateModel: function(model) {
+        var hostdetail =  [];
+        var hosts = Object.keys(model)
+        for (i=0;i<hosts.length;i++) {
+            host = hosts[i]
+            var kpis = []
+            for (j=0;j<model[host].kpis.length;j++) {
+                kpi = model[host].kpis[i]
+                kpis.push({
+                    id: kpi.id,
+                    name: kpi.name,
+                    ts: formatDate(kpi.data.ts),
+                    value: formatDate(kpi.data.value)
+                })
+            }
+            var stats = []
+            for (j=0;j<model[host].states.length;j++) {
+                stat = model[host].states[i]
+                stats.push({
+                    id: stat.id,
+                    name: stat.name,
+                    ts: formatDate(stat.data.ts),
+                    state: function() {
+                        if (stat.data.stat==0) {
+                            return "正常"
+                        } else {
+                            return "异常("+stat.data.stat+")"
+                        }
+                    }(),
+                    msg : stat.data.msg
+                })
+            }
+
+            hostdetail.push({
+                hostname: host,
+                kpis: kpis,
+                states: stats
+            })
+        }
+        this.data.set("hostdetail", hostdetail)
+        var host_folder = this.ref('host_folder')
+        if (host_folder) {
+            host_folder.data.set('count', 1)
+            host_folder.data.set('fold', false)
+        }
+    },
+})

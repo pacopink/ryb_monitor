@@ -43,3 +43,34 @@
 .yellow-table tr{border-bottom: 1px solid #d0d0d0; height: 25px; }
 .yellow-table th{font-size: 14px; text-align: center}
 .yellow-table td{padding: 5px 10px;}
+
+.hostdetail-folder {
+    background: #eee;
+}
+.hostdetail-folder-title {
+    cursor: pointer;
+    color: #FFFFFF;
+    background: #6063ce;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.hostdetail-folder-main {
+    padding: 10px;
+}
+.stat-folder-title {
+    cursor: pointer;
+    color: #FFFFFF;
+    background: #4c859c;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.kpi-folder-title {
+    cursor: pointer;
+    color: #FFFFFF;
+    background: #76069c;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
