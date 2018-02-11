@@ -10,7 +10,7 @@ function formatDate(dateValue) { //
     return ymdhis;
 };
 
-function formatDate() { //
+function formatDateNow() { //
     var time = new Date();
     var ymdhis = "";
     ymdhis += time.getFullYear() + "-";
@@ -64,7 +64,7 @@ var HostList = san.defineComponent({
     updateModel: function(model) {
         this.data.set('hosts', model)
         this.data.set('count', model.length)
-        this.data.set('ts', formatDate())
+        this.data.set('ts', formatDateNow())
     }
 });
 
@@ -108,7 +108,11 @@ var LightZone = san.defineComponent({
         }
     },
     updateModel: function(lights) {
-        var l = Object.values(lights)
+        var k = Object.keys(lights)
+        var l = []
+        for (var i=0;i<k.length;i++) {
+            l.push(lights[k[i]])
+        }
         for(var i in l) {
             l[i].createTs = formatDateCompat(l[i].createTs)
             l[i].alarmTs= formatDateCompat(l[i].alarmTs)
