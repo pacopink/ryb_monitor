@@ -60,10 +60,14 @@ pool = dummy.Pool(threads)
 if __name__=="__main__":
 
     while True:
-        states = filter(lambda x:x is not None, pool.map(lambda x:x.check(), myAlarms))
+        states = []
+        if len(myAlarms) != 0:
+            states = filter(lambda x:x is not None, pool.map(lambda x:x.check(), myAlarms))
         #for kpi in myKpis:
         #    print kpi.check()
-        kpis = filter(lambda x:x is not None, pool.map(lambda x:x.check(), myKpis))
+        kpis = []
+        if len(myKpis) != 0:
+            kpis = filter(lambda x:x is not None, pool.map(lambda x:x.check(), myKpis))
         if (len(states)>0 or len(kpis)>0):
             msg = AgentReportMsg(myhostname)
             for state in states:
