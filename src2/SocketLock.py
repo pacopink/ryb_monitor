@@ -42,9 +42,10 @@ class SocketLock:
             #log_debug(e)
             raise LockAcquireFailException()
 
-    def acquire_block(self, tick=200):
-        '''acuiqre lock if failed sleep 0.1 seconds and retry for 200 times'''
+    def acquire_block(self, second=20):
         import time
+        span = 0.1
+        tick = int(second/span)
         print_flag = False
         while True:
             try:
@@ -57,10 +58,10 @@ class SocketLock:
                 break
             if not print_flag:
                 # only print this line once
-                print "failed to acquire lock, waiting ..."
+                print "waiting lock for {SECOND} seconds ...".format(SECOND=second)
                 print_flag = True
             try:
-                time.sleep(0.1)
+                time.sleep(span)
             except Exception:
                 break
         raise LockTimeoutException()
@@ -73,15 +74,17 @@ class SocketLock:
         else:
             raise LockNotHolderToReleaseException()
 
-def withLockWait(fun):
-    '''decorator of function with blocking lock'''
-    def wrapper(*args, **kargs):
-        lock = SocketLock()
-        lock.acquire_block()
-        ret = fun(*args, **kargs)
-        lock.release()
-        return ret
-    return wrapper
+def withLockWait(second=20):
+    def wrapper0(fun):
+        '''decorator of function with blocking lock'''
+        def wrapper(*args, **kargs):
+            lock = SocketLock()
+            lock.acquire_block(second)
+            ret = fun(*args, **kargs)
+            lock.release()
+            return ret
+        return wrapper
+    return wrapper0
 
 def withLock(fun):
     '''decorator of function with nonblocking lock'''
@@ -98,7 +101,8 @@ if __name__=="__main__":
     import time
     from Logger import *
 
-    @withLockWait
+    # 通过装饰器让这个do方法被锁保护，12表示等待的时间是12s，超过12s获取不到锁就抛出异常
+    @withLockWait(12)
     def do(name, sleep):
         log_info("enter: "+ name)
         time.sleep(sleep)
@@ -111,7 +115,7 @@ if __name__=="__main__":
         except Exception,e:
             log_error(name+":"+str(e))
 
-    # 并发若干个线程，争抢锁资源, 按20s的等待时常，其中有一个必然抢不到
+    # 并发若干个线程，争抢锁资源, 按等待时常，其中至少有一个必然抢不到
     tt = map(lambda x:threading.Thread(target=doIt, args=x), 
             [("thread-1", 5), 
                 ("thread-2", 5), 
