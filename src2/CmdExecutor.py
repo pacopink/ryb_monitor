@@ -61,12 +61,8 @@ if __name__=='__main__':
     def do():
         FILE="/tmp/xxx.sh"
         print exec_cmd("rm -rf "+FILE, 10)
-        generate_script_file(FILE, "/opt/bin/cliss", "aaa\nbbbb\ncccc\ncommit\nexit\n")
+        generate_script_file(FILE, "/opt/bin/cls", "aaa\nbbbb\ncccc\ncommit\nexit\n")
         for l in get_output_lines("cat "+FILE):
             sys.stderr.write(l)
         print exec_cmd("sh "+FILE, 10)
     do()
-
-
-
-
