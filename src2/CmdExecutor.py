@@ -57,7 +57,7 @@ def generate_script_file(path, cmd, sub_cmds):
 if __name__=='__main__':
     import sys
     from SocketLock import *
-    @withLockWait
+    @withLockWait()
     def do():
         FILE="/tmp/xxx.sh"
         print exec_cmd("rm -rf "+FILE, 10)
@@ -66,3 +66,4 @@ if __name__=='__main__':
             sys.stderr.write(l)
         print exec_cmd("sh "+FILE, 10)
     do()
+
